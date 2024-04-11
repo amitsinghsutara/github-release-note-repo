@@ -1,27 +1,25 @@
-## [0.0.2](https://github.com/andreasonny83/twilio-remote-cli/compare/v0.0.1...v0.0.2) (2019-07-21)
+# Release notes configuration file
 
-> Description
+# Define the categories for your release notes
+categories:
+  - name: Bug Fixes
+    label: bug
+  - name: New Features
+    label: feature
+  - name: Enhancements
+    label: enhancement
 
-### Upgrade Steps
-* [ACTION REQUIRED]
-* 
+# Define the labels associated with each category
+labels:
+  bug:
+    color: "d73a4a"  # Red
+  feature:
+    color: "0075ca"  # Blue
+  enhancement:
+    color: "a2eeef"  # Light Blue
 
-### Breaking Changes
-* 
-* 
-
-### New Features
-* 
-* 
-
-### Bug Fixes
-* 
-* 
-
-### Performance Improvements
-* 
-* 
-
-### Other Changes
-* 
-* 
+# Define additional metadata fields for your release notes
+metadata:
+  author: "{{ author }}"
+  date: "{{ date }}"
+  version: "{{ version }}"
