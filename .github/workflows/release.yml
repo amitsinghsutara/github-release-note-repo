@@ -4,8 +4,7 @@ changelog:
   exclude:
     labels:
       - ignore-for-release
-    authors:
-      - amitsinghsutara
+   
   categories:
     - title: Breaking Changes something 🛠
       labels:
