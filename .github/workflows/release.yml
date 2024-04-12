@@ -17,16 +17,27 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v3.7.1
         with:
           github-token: ${{ secrets.CHANGELOG_RELEASE }}
+          
+      - name: Increment Version
+        id: increment_version
+        run: |
+          # Example: Increment patch version
+          # Parse existing version
+          current_version=$(cat version.txt)
+          # Increment patch version
+          incremented_version=$(echo $current_version | awk -F. '{$NF++; print}' OFS=.)
+          echo "::set-output name=tag_name::$incremented_version"
+          
+      - name: create release
 
-      - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.CHANGELOG_RELEASE }}
         with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          release_name: ${{ steps.changelog.outputs.tag }}
+          tag_name: ${{ steps.increment_version.outputs.tag_name }}
+          release_name: ${{ steps.increment_version.outputs.tag_name }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
       - name: Set Latest Release
@@ -37,4 +48,6 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/amitsinghsutara/github-release-note-repo/releases/${{ steps.create_release.outputs.id }} \
-            -d '{"tag_name": "${{ steps.changelog.outputs.tag }}", "target_commitish": "main", "name": "${{ steps.changelog.outputs.tag }}", "draft": false, "prerelease": false}'
+
+            -d '{"Releases": "${{ steps.changelog.outputs.tag }}", "target_commitish": "main", "name": "${{ steps.changelog.outputs.tag }}", "draft": false, "prerelease": false}'
+
