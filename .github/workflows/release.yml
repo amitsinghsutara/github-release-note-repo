@@ -1,25 +1,27 @@
-# Release notes configuration file
+name: Release Workflow
 
-# Define the categories for your release notes
-categories:
-  - name: Bug Fixes
-    label: bug
-  - name: New Features
-    label: feature
-  - name: Enhancements
-    label: enhancement
+on:
+  push:
+    branches:
+      - main  # Change to your main branch name
 
-# Define the labels associated with each category
-labels:
-  bug:
-    color: "d73a4a"  # Red
-  feature:
-    color: "0075ca"  # Blue
-  enhancement:
-    color: "a2eeef"  # Light Blue
+jobs:
+  release:
+    runs-on: ubuntu-latest
 
-# Define additional metadata fields for your release notes
-metadata:
-  author: "{{ author }}"
-  date: "{{ date }}"
-  version: "{{ version }}"
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # Add steps here to build your project, generate release notes, etc.
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
