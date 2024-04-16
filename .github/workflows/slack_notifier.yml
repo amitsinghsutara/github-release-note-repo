@@ -27,4 +27,4 @@ jobs:
           message: |
             PR #${{ github.event.pull_request.number }} has been merged.
             
-            ${ { steps.changelog.outputs.changelog }}
+            ${{ steps.changelog.outputs.changelog }}
