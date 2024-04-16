@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Notify via Slack
-        uses: Ilshidur/action-slack@v3
+        uses: Ilshidur/action-slack@v2
         with:
           status: ${{ job.status }}
           text: "Pull request <${{ github.event.pull_request.html_url }}|#${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}> was merged by ${{ github.event.pull_request.merged_by.login }} into main branch."
