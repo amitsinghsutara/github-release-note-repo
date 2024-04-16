@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Notify on PR Merge
         uses: act10ns/slack@v2
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
           status: "PR Merge"
           message: "PR #${{ github.event.pull_request.number }} has been merged."
-          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
