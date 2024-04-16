@@ -17,9 +17,17 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v3.7.1
         with:
           github-token: ${{ secrets.CHANGELOG_RELEASE }}
-          
-     
-          
+
+      # - name: Increment Version
+      #   id: increment_version
+      #   run: |
+      #     # Example: Increment patch version
+      #     # Parse existing version
+      #     current_version=$(cat version.txt)
+      #     # Increment patch version
+      #     incremented_version=$(echo $current_version | awk -F. '{$NF++; print}' OFS=.)
+      #     echo "::set-output name=tag_name::$incremented_version"
+
       - name: create release
 
         id: create_release
@@ -42,4 +50,3 @@ jobs:
             https://api.github.com/repos/amitsinghsutara/github-release-note-repo/releases/${{ steps.create_release.outputs.id }} \
 
             -d '{"Releases": "${{ steps.changelog.outputs.tag }}", "target_commitish": "main", "name": "${{ steps.changelog.outputs.tag }}", "draft": false, "prerelease": false}'
-
