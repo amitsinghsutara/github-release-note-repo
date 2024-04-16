@@ -1,16 +1,19 @@
-name: Slackbot on release
+name: Notify on PR Merge
 
 on:
-  release:
-    types:
-      - created
+  pull_request:
+    types: [closed]
 
 jobs:
-  notify_slack:
+  notify:
     runs-on: ubuntu-latest
-    name: Notify Slack on Release
+    if: github.event.pull_request.merged == true
+
     steps:
-      - name: Notify Slack on Releases
-        uses: amendx/slackbot-release@1.0.0
+      - name: Notify via Slack
+        uses: Ilshidur/action-slack@v1
         with:
-          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          text: "Pull request <${{ github.event.pull_request.html_url }}|#${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}> was merged by ${{ github.event.pull_request.merged_by.login }} into main branch."
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
