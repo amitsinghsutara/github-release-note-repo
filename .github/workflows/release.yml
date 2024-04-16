@@ -20,13 +20,7 @@ jobs:
           
       - name: Increment Version
         id: increment_version
-        run: |
-          # Example: Increment patch version
-          # Parse existing version
-          current_version=$(cat version.txt)
-          # Increment patch version
-          incremented_version=$(echo $current_version | awk -F. '{$NF++; print}' OFS=.)
-          echo "::set-output name=tag_name::$incremented_version"
+         run: npm version ${{ github.event.inputs.version }}
           
       - name: create release
 
