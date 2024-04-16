@@ -18,9 +18,7 @@ jobs:
         with:
           github-token: ${{ secrets.CHANGELOG_RELEASE }}
           
-      - name: Increment Version
-        id: increment_version
-         run: npm version ${{ github.event.inputs.version }}
+     
           
       - name: create release
 
