@@ -10,10 +10,21 @@ jobs:
     if: github.event.pull_request.merged == true
 
     steps:
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          # Your script or command to generate the changelog
+          # Example:
+          echo "## Changelog\n- Added feature XYZ\n- Fixed bug ABC" > changelog.txt
+          echo "::set-output name=changelog::$(cat changelog.txt)"
+
       - name: Notify on PR Merge
         uses: act10ns/slack@v2
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
           status: "PR Merge"
-          message: "PR #${{ github.event.pull_request.number }} has been merged."
+          message: |
+            PR #${{ github.event.pull_request.number }} has been merged.
+            
+            ${ { steps.changelog.outputs.changelog }}
