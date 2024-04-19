@@ -1,4 +1,4 @@
-name: Update Changelog
+name: Create and Update Release
 
 on:
   push:
@@ -6,29 +6,43 @@ on:
       - main
 
 jobs:
-  update-changelog:
+  release:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
 
       - name: Generate Changelog
         id: changelog
         run: |
-          # Run your changelog generation script here
-          # Example:
-          npm install -g auto-changelog
-          auto-changelog
+          # Generate changelog here
+          echo "Changelog content" > changelog.txt
 
-      - name: Commit Changelog Update
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add CHANGELOG.md
-          git commit -m "Update changelog [skip ci]"
-
-      - name: Push Changes
-        uses: ad-m/github-push-action@master
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: main
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v1.0.0
+          release_name: Release v1.0.0
+          body: |
+            $(cat changelog.txt)
+
+      - name: Update Release Tag
+        if: success()
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { context, github } = require('@actions/github');
+            const tag = context.payload.release.tag_name;
+            const repo = context.repo;
+
+            // Create a new tag reference for the release
+            github.git.createRef({
+              ...repo,
+              ref: `refs/tags/${tag}`,
+              sha: context.payload.release.target_commitish
+            });
