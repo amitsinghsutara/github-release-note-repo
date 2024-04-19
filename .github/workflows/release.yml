@@ -1,4 +1,4 @@
-name: Create and Update Release
+name: Release Workflow
 
 on:
   push:
@@ -6,43 +6,26 @@ on:
       - main
 
 jobs:
-  release:
+  changelog:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Generate Changelog
+      - name: conventional Changelog Action
         id: changelog
-        run: |
-          # Generate changelog here
-          echo "Changelog content" > changelog.txt
+        uses: TriPSs/conventional-changelog-action@v3.7.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.14
-          release_name: Release v1.0.14
-          body: |
-            $(cat changelog.txt)
-
-      - name: Update Release Tag
-        if: success()
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { github, context: actionContext } = require('@actions/github');
-            const releaseTag = 'releases'; // Specify the tag name here
-            const repo = actionContext.repo;
-
-            // Create a new tag reference for the release
-            github.git.createRef({
-              ...repo,
-              ref: `refs/tags/${releaseTag}`,
-              sha: actionContext.payload.release.target_commitish
-            });
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          release_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
