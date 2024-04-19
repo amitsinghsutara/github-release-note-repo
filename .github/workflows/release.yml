@@ -25,8 +25,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.13
-          release_name: Release v1.0.13
+          tag_name: v1.0.14
+          release_name: Release v1.0.14
           body: |
             $(cat changelog.txt)
 
@@ -36,13 +36,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { context, github } = require('@actions/github');
+            const { github, context: actionContext } = require('@actions/github');
             const releaseTag = 'releases'; // Specify the tag name here
-            const repo = context.repo;
+            const repo = actionContext.repo;
 
             // Create a new tag reference for the release
             github.git.createRef({
               ...repo,
               ref: `refs/tags/${releaseTag}`,
-              sha: context.payload.release.target_commitish
+              sha: actionContext.payload.release.target_commitish
             });
